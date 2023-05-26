@@ -1,5 +1,2 @@
-*.o
-*.mod
-libtffb.*
-test
 build/
+share/

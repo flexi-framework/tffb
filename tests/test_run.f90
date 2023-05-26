@@ -25,14 +25,14 @@
 !===================================================================================================================================
 !> Example Program to test installation of TFFB library
 !===================================================================================================================================
-PROGRAM Test
+PROGRAM Test_Run
 !-----------------------------------------------------------------------------------------------------------------------------------
 ! MODULES
 USE TFFB
 IMPLICIT NONE
 !-----------------------------------------------------------------------------------------------------------------------------------
 ! LOCAL VARIABLES
-CHARACTER(LEN=255)  :: model_path  ='tests/model/'
+CHARACTER(LEN=255)  :: model_path  ! Given via commandline
 CHARACTER(LEN=255)  :: input_node  ='serving_default_input_1'
 CHARACTER(LEN=255)  :: output_node ='StatefulPartitionedCall'
 REAL(8)             :: data_input( 3,6,6,6,2)
@@ -41,6 +41,8 @@ REAL(8),PARAMETER   :: res=2.2033618733985350E-005
 REAL(8),PARAMETER   :: eps=1.E-15
 INTEGER             :: iVar,i,j,k,iElem
 !===================================================================================================================================
+CALL GET_COMMAND_ARGUMENT(1,model_path)
+
 ! 1. Load model
 CALL TFFB_LoadModel(model_path,input_node,output_node)
 
@@ -81,4 +83,4 @@ WRITE(*,'(A)',ADVANCE='NO') 'Finalizing model...'
 CALL TFFB_FinalizeModel()
 WRITE(*,'(A)') 'DONE!'
 
-END PROGRAM TEST
+END PROGRAM TEST_Run
