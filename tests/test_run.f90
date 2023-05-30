@@ -37,8 +37,8 @@ CHARACTER(LEN=255)  :: input_node  ='serving_default_input_1'
 CHARACTER(LEN=255)  :: output_node ='StatefulPartitionedCall'
 REAL(8)             :: data_input( 3,6,6,6,2)
 REAL(8)             :: data_output(        2)
-REAL(8),PARAMETER   :: res=2.2033618733985350E-005
-REAL(8),PARAMETER   :: eps=1.E-15
+REAL(8),PARAMETER   :: res=4.5335428E-003
+REAL(8),PARAMETER   :: eps=1.E-8 ! single precision
 INTEGER             :: iVar,i,j,k,iElem
 !===================================================================================================================================
 CALL GET_COMMAND_ARGUMENT(1,model_path)
@@ -51,10 +51,10 @@ DO k=1,6
   DO j=1,6
     DO i=1,6
       DO iVar=1,3
-        data_input(iVar,i,j,k,:) = 1.000*REAL(iVar,8) &
-                                 - 0.100*REAL(i   ,8) &
-                                 + 0.010*REAL(j   ,8) &
-                                 - 0.001*REAL(k   ,8)
+        data_input(iVar,i,j,k,:) = 2.000*REAL(iVar,8) &
+                                 - 1.000*REAL(i   ,8) &
+                                 + 0.500*REAL(j   ,8) &
+                                 - 0.250*REAL(k   ,8)
       END DO
     END DO
   END DO
