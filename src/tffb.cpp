@@ -115,7 +115,7 @@ void c_tffb_loadmodel(char* modelpath, char* inputnode, char* outputnode, int do
   }
 
   // Enabling XLA compiler increases performance significantly, but might be prone to issues
-  TF_EnableXLACompilation(sessionOpts_,true);
+  //TF_EnableXLACompilation(sessionOpts_,true);
 
   // Load session
   const char* tags[] = {"serve"};
