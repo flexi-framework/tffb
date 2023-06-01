@@ -7,9 +7,12 @@ This project contains the TensorFlow Fortran Binding (TFFB) library, which allow
 
 ## License
 The TFFB is licensed under the MIT License <http://opensource.org/licenses/MIT>.
-For the full license terms see the included license file [license](LICENSE.MD).
-The majority of the TFFB is Copyright (c) 2023, Prof. Andrea Beck, while the `src/tf.cpp` file contains code of otherss, for which the original authors hold the Copyright, i.e. Copyright (c) 2018-2020, Daniil Goncharov and Copyright (c) 2020-Present, Romit Maulik and other contributors.
-Please also have a look at their projects under <https://github.com/Neargye/hello_tf_c_api> and <https://github.com/argonne-lcf/TensorFlowFoam>, respectively, and have a look at the original publication by Maulik et al. ["Deploying deep learning in OpenFOAM with TensorFlow", AIAA Scitech 2021.](https://arxiv.org/pdf/2012.00900.pdf)
+For the full license terms see the included license file [license](LICENSE.md).
+The majority of the TFFB is Copyright (c) 2023, Prof. Andrea Beck, while the `src/tf.cpp` file contains code of others, for which the original authors hold the Copyright, i.e. Copyright (c) 2018-2020, Daniil Goncharov and Copyright (c) 2020-Present, Romit Maulik and other contributors.
+Please also have a look at their projects under
+- <https://github.com/Neargye/hello_tf_c_api>
+- <https://github.com/argonne-lcf/TensorFlowFoam>
+and have a look at the original publication by Maulik et al. ["Deploying deep learning in OpenFOAM with TensorFlow", AIAA Scitech 2021.](https://arxiv.org/pdf/2012.00900.pdf)
 
 
 ## Installation
@@ -99,3 +102,38 @@ SUBROUTINE TFFB_FinalizeModel()
 ```
 This routine does not require any arguments but rather frees allocated memory and tears down the initiated TensorFlow session used for evaluating the model.
 This routine is expected to be called before a new model is loaded.
+
+## Usage
+The TFFB can be included into other projects by linking against the shared library `libtffb.so` in `build/lib/` and include the directory `build/include`.
+An example on how to include the library into an existing CMake build project can be found here [here](https://github.com/flexi-framework/flexi-extensions/blob/tffb_turbmodel/CMakeListsLib.txt#L453).
+This implementation also allows to download and build the TFFB automatically in case it is not found on the system.
+Moreover, this project also includes an example implementation of how a trained TensorFlow-Keras model is incorporated in an actual Fortran project.
+For this, a data-driven turbulence model developed in [Deep reinforcement learning for turbulence modeling in large eddy simulations, Kurz et al. 2023](https://arxiv.org/pdf/2206.11038.pdf) is employed in the [FLEXI](https://github.com/flexi-framework/flexi) framework.
+To checkout the project run
+```
+git clone https://github.com/flexi-framework/flexi-extensions.git --branch tffb_turbmodel --single-branch
+```
+The model itself is implemented [here](https://github.com/flexi-framework/flexi-extensions/blob/tffb_turbmodel/src/equations/navierstokes/eddyVisc/smagorinsky_ml/smagorinsky_ml.f90) and a corresponding testcase can be found in `tutorials/tensorflow`.
+To run the example FLEXI first has to be compiled using the detailed installation instructions found in the [FLEXI documentation](https://www.flexi-project.org/doc/userguide/userguide.pdf).
+For this, create a build directory in the FLEXI root directory with
+```
+cd flexi-extensions
+mkdir -p build && cd build
+```
+Then, configure the project using
+```
+cmake ../ -DLIBS_USE_MPI=OFF -DLIBS_BUILD_MATH_LIB=ON -DLIBS_USE_TFFB=ON -DFLEXI_EDDYVISCOSITY=ON -DFLEXI_TESTCASE=hit -DFLEXI_NODETYPE=GAUSS-LOBATTO -DFLEXI_SPLIT_DG=ON
+```
+and build with
+```
+make -j
+```
+Since FLEXI also installs some dependencies, the process might take while.
+If `HDF5` is already installed on the system, building it again can also be disabled in the CMake configuration and if `MPI` is installed on the system the corresponding flag can also be set to `ON`.
+Lastly, change into the tutorial directory and run it using
+```
+cd ../tutorials/tensorflow
+./../../build/bin/flexi parameter_flexi_tf.ini run_f200_N5_6Elems_State_0000008.000000000.h5
+```
+Then, FLEXI runs a forced HIT simulation, where the `C_s` parameter of the employed Smagorinsky model is adapted in each timestep by the trained TensorFlow model.
+For more details on FLEXI and how to analyze the results, have a look at the [FLEXI documentation](https://www.flexi-project.org/doc/userguide/userguide.pdf).
