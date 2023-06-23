@@ -4,6 +4,11 @@
 </p>
 This project contains the TensorFlow Fortran Binding (TFFB) library, which allows to load and evaluate Keras models directly from Fortran in a straight-forward manner.
 
+## Citation
+This is a scientific project.
+If you consider it useful, please cite the project with
+
+_Towards Exascale CFD Simulations Using the Discontinuous Galerkin Solver FLEXI_, Marcel Blind, Min Gao, Daniel Kempf, Patrick Kopper, Marius Kurz, Anna Schwarz, and Andrea Beck, 2023. <https://doi.org/10.48550/arXiv.2306.12891>.
 
 ## License
 The TFFB is licensed under the MIT License <http://opensource.org/licenses/MIT>.
